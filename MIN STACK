@@ -1,0 +1,64 @@
+#include <iostream>
+#include <stack>
+#include <climits>
+using namespace std;
+
+class MinStack {
+private:
+    stack<int> st;
+    int mini;
+
+public:
+    // Constructor
+    MinStack() {
+        mini = INT_MAX;  // Initialize the minimum value to a large number
+    }
+    
+    // Push a value onto the stack
+    void push(int val) {
+        if (st.empty()) {
+            // If stack is empty, push the value and set mini
+            mini = val;
+            st.push(val);
+        } else if (val >= mini) {
+            // If the value is greater than or equal to the current minimum, just push it
+            st.push(val);
+        } else {
+            // If the value is smaller than the current minimum, store the encoded value
+            st.push((long long)2 * val - mini);  // Encode the value
+            mini = val;  // Update the minimum
+        }
+    }
+    
+    // Pop the top element from the stack
+    void pop() {
+        if (st.empty()) return;
+        
+        int x = st.top();
+        st.pop();
+        
+        if (x < mini) {
+            // This means the popped value was an encoded minimum, so we need to decode it
+            mini = 2 * mini - x;  // Restore the old minimum
+        }
+    }
+    
+    // Get the top element from the stack
+    int top() {
+        if (st.empty()) return -1;  // Return -1 or another sentinel value if stack is empty
+        
+        int x = st.top();
+        
+        if (x >= mini) {
+            return x;  // If the value is greater than or equal to mini, it's a normal value
+        }
+        
+        return mini;  // If the value is smaller than mini, return the current minimum
+    }
+    
+    // Get the minimum element from the stack
+    int getMin() {
+        return mini;  // Return the current minimum value
+    }
+};
+
